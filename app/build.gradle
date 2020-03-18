@@ -1,0 +1,345 @@
+apply plugin: 'com.android.application'
+//apply plugin: 'com.bugsnag.android.gradle'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.getkeepsafe.dexcount'
+//apply plugin: 'com.gladed.androidgitversion'
+
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "com.moowork.gradle:gradle-node-plugin:${Versions.nodeGradle}"
+    }
+}
+
+apply plugin: com.moowork.gradle.node.NodePlugin
+
+apply from: '../spotless.gradle'
+//group = APP_GROUP
+
+android {
+    compileSdkVersion Versions.targetSdk
+    buildToolsVersion kau.Versions.buildTools
+
+    /*   androidGitVersion {
+           codeFormat = 'MMNNPPXX'
+           format = '%tag%%-count%%-commit%'
+           prefix 'v'
+       }*/
+
+    defaultConfig {
+        //applicationId "${project.APP_GROUP}.${project.APP_ID.toLowerCase(Locale.CANADA)}"
+
+        applicationId "dark.pro.social"
+        minSdkVersion kau.Versions.minSdk
+        targetSdkVersion Versions.targetSdk
+        // versionCode androidGitVersion.code()
+        // versionName androidGitVersion.name()
+
+        versionCode 1
+        versionName "1.00"
+
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/src/schemas".toString()]
+            }
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            //outputFileName = "${project.APP_ID}-${variant.buildType.name}.apk"
+            outputFileName = "Dark pro social.apk"
+        }
+    }
+
+    lintOptions {
+        warningsAsErrors true
+        disable 'TrustAllX509TrustManager',
+                'UnusedResources',
+                'ContentDescription',
+                'RtlSymmetry',
+                'MissingTranslation'
+
+        xmlReport false
+        textReport true
+        textOutput 'stdout'
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+/*    def testKeystoreFile = file('../files/test.keystore')
+    def testPropFile = file('../files/test.properties')
+    def withTestSigning = testKeystoreFile.exists() && testPropFile.exists()
+
+    def releaseKeystoreFile = file('../files/release.keystore')
+    def releasePropFile = file('../files/release.properties')
+    def withReleaseSigning = releaseKeystoreFile.exists() && releasePropFile.exists()
+
+    signingConfigs {
+
+        debug {
+            storeFile file("../files/debug.keystore")
+            storePassword "debugKey"
+            keyAlias "debugKey"
+            keyPassword "debugKey"
+        }
+
+        if (withTestSigning) {
+            def testProps = new Properties()
+            testPropFile.withInputStream { testProps.load(it) }
+
+            test {
+                storeFile testKeystoreFile
+                storePassword testProps.getProperty('storePassword')
+                keyAlias testProps.getProperty('keyAlias')
+                keyPassword testProps.getProperty('keyPassword')
+            }
+        }
+
+        if (withReleaseSigning) {
+            def releaseProps = new Properties()
+            releasePropFile.withInputStream { releaseProps.load(it) }
+
+            release {
+                storeFile releaseKeystoreFile
+                storePassword releaseProps.getProperty('storePassword')
+                keyAlias releaseProps.getProperty('keyAlias')
+                keyPassword releaseProps.getProperty('keyPassword')
+            }
+        }
+
+
+}
+8*/
+def compilerArgs = ["-Xuse-experimental=kotlin.Experimental" /*, "-XXLanguage:+InlineClasses"*/]
+
+buildTypes {
+    debug {
+        minifyEnabled false
+        shrinkResources false
+         applicationIdSuffix ".debug"
+        versionNameSuffix "-debug"
+          signingConfig signingConfigs.debug
+        resValue "string", "frost_name", "Dark Social Pro"
+        resValue "string", "frost_web", "Dark Social PRO"
+        ext.enableBugsnag = false
+
+        kotlinOptions.freeCompilerArgs += compilerArgs
+    }
+    releaseTest {
+        minifyEnabled true
+        shrinkResources true
+        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        applicationIdSuffix ".test"
+        versionNameSuffix "-test"
+        resValue "string", "frost_name", "Dark Social"
+        resValue "string", "frost_web", "Dark Social"
+    }
+    release {
+        minifyEnabled true
+        shrinkResources true
+        proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        resValue "string", "frost_name", "Dark Theme Social Pro "
+        resValue "string", "frost_web", "Dark Theme Social Pro"
+    }
+}
+
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+    test.java.srcDirs += 'src/test/kotlin'
+    androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    main.assets.srcDirs += ['src/web/assets']
+}
+
+packagingOptions {
+    pickFirst 'META-INF/core_release.kotlin_module'
+    pickFirst 'META-INF/library_release.kotlin_module'
+}
+
+compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+}
+
+testOptions.unitTests {
+    includeAndroidResources = true
+    // Don't throw runtime exceptions for android calls that are not mocked
+    returnDefaultValues = true
+
+    // Always show the result of every unit test, even if it passes.
+    all {
+        testLogging {
+            events 'passed', 'skipped', 'failed', 'standardError'
+        }
+    }
+}
+
+androidExtensions {
+    experimental = true
+}
+
+}
+
+node {
+    version = '12.4.0'
+    npmVersion = '6.9.0'
+    download = true
+    nodeModulesDir = file("${project.projectDir}/src/web")
+}
+
+task npmCi(type: NpmTask) {
+    dependsOn npmSetup
+    npmCommand = ["ci"]
+}
+
+task frostWebGen(type: NpmTask) {
+    dependsOn npmCi
+    group 'build'
+    description 'Generate Frost web assets'
+    args = ['run', 'compile']
+}
+
+preBuild.dependsOn(frostWebGen)
+
+repositories {
+    google()
+    jcenter()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    implementation 'androidx.exifinterface:exifinterface:1.0.0'
+
+    androidTestImplementation kau.Dependencies.kotlinTest
+    androidTestImplementation kau.Dependencies.espresso
+    androidTestImplementation kau.Dependencies.testRules
+    androidTestImplementation kau.Dependencies.testRunner
+    androidTestImplementation kau.Dependencies.kotlinReflect
+
+    testImplementation kau.Dependencies.kotlinTest
+    testImplementation kau.Dependencies.kotlinReflect
+    testImplementation kau.Dependencies.junit
+
+    implementation kau.Dependencies.kotlin
+
+    //noinspection GradleDependency
+    implementation kau.Dependencies.kau('core', KAU)
+    //noinspection GradleDependency
+    implementation kau.Dependencies.kau('core-ui', KAU)
+    //noinspection GradleDependency
+    implementation kau.Dependencies.kau('adapter', KAU)
+    //noinspection GradleDependency
+    implementation kau.Dependencies.kau('fastadapter', KAU)
+    //noinspection GradleDependency
+    implementation kau.Dependencies.kau('about', KAU)
+    //noinspection GradleDependency
+    implementation kau.Dependencies.kau('colorpicker', KAU)
+    //noinspection GradleDependency
+    implementation kau.Dependencies.kau('mediapicker', KAU)
+    //noinspection GradleDependency
+    implementation kau.Dependencies.kau('kpref-activity', KAU)
+    //noinspection GradleDependency
+    implementation kau.Dependencies.kau('searchview', KAU)
+
+    implementation "androidx.core:core-ktx:${Versions.ktx}"
+
+    implementation "androidx.biometric:biometric:${Versions.andxBiometric}"
+
+    implementation "org.koin:koin-android:${Versions.koin}"
+    testImplementation "org.koin:koin-test:${Versions.koin}"
+    androidTestImplementation "org.koin:koin-test:${Versions.koin}"
+
+//    androidTestImplementation "io.mockk:mockk:${Versions.mockk}"
+
+    implementation kau.Dependencies.coroutines
+
+    implementation "org.apache.commons:commons-text:${Versions.apacheCommonsText}"
+
+    implementation "com.devbrackets.android:exomedia:${Versions.exoMedia}"
+
+    implementation kau.Dependencies.fastAdapter("diff")
+    implementation kau.Dependencies.fastAdapter("drag")
+    implementation kau.Dependencies.fastAdapter("expandable")
+
+    //noinspection GradleDependency
+    implementation kau.Dependencies.glide
+    //noinspection GradleDependency
+    kapt kau.Dependencies.glideKapt
+
+    //noinspection GradleDependency
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${Versions.leakCanary}"
+    //safe
+    //noinspection GradleDependency
+    releaseTestImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${Versions.leakCanary}"
+    //noinspection GradleDependency
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:${Versions.leakCanary}"
+//    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${Versions.leakCanary}"
+
+    //Icons
+    implementation kau.Dependencies.iconicsMaterial
+    implementation kau.Dependencies.iconicsCommunity
+
+    implementation "org.jsoup:jsoup:${Versions.jsoup}"
+
+    implementation "com.squareup.okhttp3:okhttp:${Versions.okhttp}" //safe
+    implementation "com.squareup.okhttp3:logging-interceptor:${Versions.okhttp}"
+    testImplementation "com.squareup.okhttp3:mockwebserver:${Versions.okhttp}"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:${Versions.okhttp}" //safe
+
+    implementation "co.zsmb:materialdrawer-kt:${Versions.materialDrawerKt}" //safe
+
+    // implementation kau.Dependencies.bugsnag
+
+    implementation "com.davemorrissey.labs:subsampling-scale-image-view:${Versions.scaleImageView}"
+    // safe
+
+    implementation "androidx.room:room-ktx:${Versions.room}"
+    implementation "androidx.room:room-runtime:${Versions.room}"
+    kapt "androidx.room:room-compiler:${Versions.room}"
+    testImplementation "androidx.room:room-testing:${Versions.room}"
+
+   // implementation 'com.google.android.gms:play-services-ads:17.2.1'
+
+    //billing library
+    implementation 'com.android.billingclient:billing:2.1.0'
+    implementation 'com.android.billingclient:billing-ktx:2.1.0'
+
+
+}
+
+// Validates code and generates apk
+task createGithubReleaseApk(type: GradleBuild) {
+    tasks = ['spotlessCheck',
+             'lintRelease',
+             'testReleaseUnitTest',
+             'connectedAndroidTest',
+             'assembleRelease']
+}
+
+def kotlinResolutions = ['kotlin-reflect',
+                         'kotlin-stdlib',
+                         'kotlin-stdlib-jdk7',
+                         'kotlin-stdlib-jdk8',
+                         'kotlin-test',
+                         'kotlin-test-junit4',
+                         'kotlin-test-junit5']
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'org.jetbrains.kotlin' && requested.name in kotlinResolutions) {
+            details.useVersion kau.Versions.kotlin
+        }
+    }
+}
+
+//apply plugin: 'com.bugsnag.android.gradle'

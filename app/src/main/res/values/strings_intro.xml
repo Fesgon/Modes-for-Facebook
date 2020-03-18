@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="skip">Skip</string>
+    <string name="intro_welcome_to_frost" translatable="false">Welcome to Dark Pro for Facebook</string>
+    <string name="intro_slide_to_continue" translatable="false">Slide to continue</string>
+    <string name="intro_select_theme" translatable="false">Extra material themes  Customize your own theme in settings</string>
+
+    <string name="intro_multiple_accounts" translatable="false">Multiple Accounts Support</string>
+    <string name="intro_multiple_accounts_desc" translatable="false">Add and switch to different facebook accounts directly from the navigation bar</string>
+
+    <string name="intro_easy_navigation" translatable="false">Easy Navigation</string>
+    <string name="intro_easy_navigation_desc" translatable="false">Slide between views with a swipe \nChoose between bottom or top facebook navigation bar</string>
+
+    <string name="intro_context_aware" translatable="false">Download Videos and Photos</string>
+    <string name="intro_context_aware_desc" translatable="false">Watch and download Videos.\nLong press images to download</string>
+
+    <string name="intro_end" translatable="false">Explore more fascinating features under settings. Let\'s Begin!</string>
+    <string name="intro_tap_to_exit" translatable="false">Tap anywhere to exit</string>
+</resources>

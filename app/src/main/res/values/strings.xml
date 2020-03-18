@@ -1,0 +1,98 @@
+<resources>
+
+    <!-- Test Ads-->
+    <string name="app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="interstitial_ad_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="banner_ad_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="reward_video_ad_id" translatable="false">ca-app-pub-3940256099942544/5224354917</string>
+
+
+
+
+    <string translatable="false" name="upgrade_popup_title">Upgrade to Pro Version</string>
+    <string translatable="false" name="upgrade_popup_yes">Upgrade Now</string>
+
+    <string translatable="false" name="dark_pro_appID">it.dark.pro</string>
+
+
+    <string translatable="false" name="upgrade_message">Remove Ads. Faster loading speed. Swipe feature and more  Exciting Themes all for lifetime</string>
+
+    <string name="feed">News Feed</string>
+    <string name="most_recent">Most Recent</string>
+    <string name="top_stories">Top Stories</string>
+    <string name="profile">Profile</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="events">Events</string>
+    <string name="friends">Friend Requests</string>
+    <string name="messages">Messages</string>
+    <string name="notifications">Notifications</string>
+    <string name="activity_log">Activity Log</string>
+    <string name="pages">Pages</string>
+    <string name="groups">Groups</string>
+    <string name="saved">Saved</string>
+    <string name="birthdays">Birthdays</string>
+    <string name="chat">Online Friends</string>
+    <string name="photos">Photos</string>
+    <string name="marketplace">Marketplace</string>
+    <string name="menu" translatable="false">@string/kau_menu</string>
+    <string name="settings" translatable="false">@string/kau_settings</string>
+    <string name="notes">Notes</string>
+    <string name="on_this_day">On This Day</string>
+
+    <string name="loading_account">Getting everything ready…</string>
+    <string name="welcome">Welcome %s</string>
+    <string name="select_facebook_account">Select or add Facebook Account</string>
+    <string name="account_not_found">Current account is not in the database</string>
+
+    <string name="frost_notifications">Speedy Notifications</string>
+    <string name="requires_custom_theme">Requires custom theme</string>
+
+    <string name="subject">Subject</string>
+    <string name="share">Share</string>
+
+    <string name="web_overlay_swipe_hint">Swipe right to go back to the previous window.</string>
+    <string name="profile_picture">Profile Picture</string>
+
+    <string name="new_message">New Message</string>
+    <string name="no_text">No text</string>
+
+    <string name="show_all_results">Show All Results</string>
+
+
+    <string name="frost_description">Speedy is a fully themable,
+        fully functional alternative to the official Facebook app.</string>
+
+    <string name="faq_title">Speedy FAQ</string>
+
+    <string name="html_extraction_error">An error occurred in the html extraction.</string>
+    <string name="html_extraction_cancelled">The request has been cancelled.</string>
+    <string name="html_extraction_timeout">The request has timed out.</string>
+    <string name="file_chooser_not_found">File chooser not found</string>
+
+    <string name="top_bar">Top Bar Navigation</string>
+    <string name="bottom_bar">Bottom Bar Navigation</string>
+
+    <string name="pip" translatable="false">PIP</string>
+    <string name="preview">Preview</string>
+    <string name="options">Options</string>
+    <string name="tab_customizer_instructions">Long press and drag to rearrange the top icons.</string>
+
+    <string name="no_new_notifications">No new notifications found</string>
+
+    <!--Biometrics-->
+    <string name="biometrics_prompt_title">Authenticate Speedy</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <!--
+    Template used to display human readable string;
+    For instance:
+    Today at 1:23 PM
+    Mar 13 at 9:00 AM
+
+    The first element is the day, and the second element is the time
+    -->
+    <string name="time_template">%1$s at %2$s</string>
+
+    <string name="disclaimer">Disclaimer</string>
+
+</resources>
